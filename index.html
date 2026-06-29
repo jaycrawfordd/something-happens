@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>something happens</title>
+    <link rel="icon" type="image/jpeg" href="assets/cute.jpg?v=20260628-2">
+    <link rel="stylesheet" href="styles.css?v=20260628-2">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar-date" id="sidebarDate"></div>
+        <nav class="nav" aria-label="Main navigation">
+          <button class="nav-btn is-active" data-view="dashboard">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+            <span class="nav-label">Dashboard</span>
+          </button>
+          <button class="nav-btn" data-view="calendar">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+            <span class="nav-label">Calendar</span>
+          </button>
+          <button class="nav-btn" data-view="log">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+            <span class="nav-label">Log Today</span>
+          </button>
+          <button class="nav-btn" data-view="goals">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+            <span class="nav-label">Goals</span>
+          </button>
+          <button class="nav-btn" data-view="weight">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 10a4 4 0 0 1 8 0M12 10l2-2"/></svg>
+            <span class="nav-label">Weight</span>
+          </button>
+          <button class="nav-btn" data-view="settings">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.1A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.1A1.7 1.7 0 0 0 15.4 4a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.14.37.36.7.66.96.3.26.68.4 1.07.4H21v4h-.1A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+            <span class="nav-label">Settings</span>
+          </button>
+        </nav>
+        <div class="sidebar-signature">
+          <span class="signature-avatar"><img src="assets/cute.jpg" alt=""></span>
+          <span class="signature-name">something happens</span>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <h2 id="viewTitle">Dashboard</h2>
+        </header>
+
+        <section id="dashboard" class="view is-active"></section>
+        <section id="calendar" class="view"></section>
+        <section id="log" class="view"></section>
+        <section id="goals" class="view"></section>
+        <section id="weight" class="view"></section>
+        <section id="settings" class="view"></section>
+      </main>
+    </div>
+
+    <dialog id="goalDialog">
+      <form method="dialog" id="goalForm" class="dialog-form">
+        <div class="dialog-head">
+          <h3 id="goalDialogTitle">New Goal</h3>
+          <button type="button" class="icon-btn" id="closeGoalDialog" aria-label="Close">×</button>
+        </div>
+        <input type="hidden" id="goalId">
+        <div class="form-grid">
+          <label>Goal name<input id="goalName" required></label>
+          <label>Priority<select id="goalPriority">
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select></label>
+        </div>
+        <label>Why it matters<textarea id="goalWhy" rows="2"></textarea></label>
+        <label>Actions <span class="hint">One clear action per line.</span><textarea id="goalActions" rows="5"></textarea></label>
+        <label class="goal-track-toggle"><input type="checkbox" id="goalTrackDaily"><span>Track these actions in the daily log</span></label>
+        <label>Websites and resources <span class="hint">One URL per line.</span><textarea id="goalResources" rows="4" placeholder="https://example.com"></textarea></label>
+        <div class="dialog-actions">
+          <button class="primary-btn" value="default">Save Goal</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js?v=20260628-2"></script>
+  </body>
+</html>
