@@ -3,12 +3,31 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://obmfhwidmsppirfovyqt.supabase.co wss://obmfhwidmsppirfovyqt.supabase.co; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
     <title>something happens</title>
-    <link rel="icon" type="image/jpeg" href="assets/cute.jpg?v=20260628-2">
-    <link rel="stylesheet" href="styles.css?v=20260628-2">
+    <link rel="icon" type="image/jpeg" href="assets/cute.jpg?v=20260628-3">
+    <link rel="stylesheet" href="styles.css?v=20260628-3">
   </head>
   <body>
-    <div class="app-shell">
+    <section class="auth-screen" id="authScreen" aria-live="polite">
+      <div class="auth-panel">
+        <span class="auth-avatar"><img src="assets/cute.jpg" alt=""></span>
+        <p class="auth-brand">something happens</p>
+        <h1>Sign in to sync</h1>
+        <p class="auth-copy">One private account across your phone, tablet, and computer.</p>
+        <form class="auth-form" id="authForm">
+          <label>Email<input type="email" id="authEmail" autocomplete="email" required></label>
+          <label>Password<input type="password" id="authPassword" autocomplete="current-password" minlength="8" required></label>
+          <button class="primary-btn" id="signInBtn">Sign In</button>
+        </form>
+        <button class="auth-link" id="createAccountBtn" type="button">Create account</button>
+        <button class="auth-link" id="localModeBtn" type="button" hidden>Continue locally</button>
+        <p class="auth-status" id="authStatus"></p>
+      </div>
+    </section>
+
+    <div class="app-shell" id="appShell" hidden>
       <aside class="sidebar">
         <div class="sidebar-date" id="sidebarDate"></div>
         <nav class="nav" aria-label="Main navigation">
@@ -37,6 +56,7 @@
             <span class="nav-label">Settings</span>
           </button>
         </nav>
+        <div class="sync-indicator" id="syncIndicator">Checking sync...</div>
         <div class="sidebar-signature">
           <span class="signature-avatar"><img src="assets/cute.jpg" alt=""></span>
           <span class="signature-name">something happens</span>
@@ -82,6 +102,8 @@
       </form>
     </dialog>
 
-    <script src="app.js?v=20260628-2"></script>
+    <script src="vendor/supabase.js?v=2.108.2"></script>
+    <script src="cloud.js?v=20260628-3"></script>
+    <script src="app.js?v=20260628-3"></script>
   </body>
 </html>

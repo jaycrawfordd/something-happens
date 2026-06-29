@@ -160,27 +160,34 @@ function normalizeGoal(goal) {
   };
 }
 
+function normalizeState(parsed) {
+  const fresh = defaultState();
+  const source = parsed && typeof parsed === "object" ? parsed : {};
+  const migrated = { ...fresh, ...source };
+  migrated.settings = { ...fresh.settings, ...(source.settings || {}) };
+  if (!source.settings?.visualVersion) {
+    migrated.settings.theme = "dark";
+    migrated.settings.visualVersion = 1;
+  }
+  if (!source.checklistTemplates || source.version !== 2) {
+    migrated.checklistTemplates = fresh.checklistTemplates;
+    migrated.checklist = {};
+    migrated.version = 2;
+  }
+  migrated.logs = source.logs && typeof source.logs === "object" ? source.logs : {};
+  migrated.checklist = migrated.checklist && typeof migrated.checklist === "object" ? migrated.checklist : {};
+  migrated.checklistSkips = source.checklistSkips && typeof source.checklistSkips === "object" ? source.checklistSkips : {};
+  migrated.goals = (Array.isArray(source.goals) ? source.goals : fresh.goals).map(normalizeGoal);
+  if (!migrated.settings.userName) migrated.settings.userName = "Guest";
+  if (!["light", "dark"].includes(migrated.settings.theme)) migrated.settings.theme = "dark";
+  return migrated;
+}
+
 function loadState() {
   const saved = localStorage.getItem(STORE_KEY);
   if (!saved) return defaultState();
   try {
-    const parsed = JSON.parse(saved);
-    const fresh = defaultState();
-    const migrated = { ...fresh, ...parsed };
-    migrated.settings = { ...fresh.settings, ...(parsed.settings || {}) };
-    if (!parsed.settings?.visualVersion) {
-      migrated.settings.theme = "dark";
-      migrated.settings.visualVersion = 1;
-    }
-    if (!parsed.checklistTemplates || parsed.version !== 2) {
-      migrated.checklistTemplates = fresh.checklistTemplates;
-      migrated.checklist = {};
-      migrated.version = 2;
-    }
-    migrated.goals = (Array.isArray(parsed.goals) ? parsed.goals : fresh.goals).map(normalizeGoal);
-    if (!migrated.settings.userName) migrated.settings.userName = "Guest";
-    if (!["light", "dark"].includes(migrated.settings.theme)) migrated.settings.theme = "dark";
-    return migrated;
+    return normalizeState(JSON.parse(saved));
   } catch {
     return defaultState();
   }
@@ -188,6 +195,7 @@ function loadState() {
 
 function saveState() {
   localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  if (typeof queueCloudSave === "function") queueCloudSave();
 }
 
 function applyTheme() {
@@ -1089,6 +1097,7 @@ function drawBarChart(canvasId, entries, options) {
 function renderSettings() {
   document.getElementById("settings").innerHTML = `
     <div class="grid">
+      ${typeof renderCloudSettingsPanel === "function" ? renderCloudSettingsPanel() : ""}
       <div class="panel span-6">
         <p class="eyebrow">Profile</p>
         <h3>Your name</h3>
@@ -1107,8 +1116,8 @@ function renderSettings() {
       </div>
       <div class="panel span-6">
         <p class="eyebrow">Data</p>
-        <h3>Local storage only</h3>
-        <p class="muted">Everything is stored in this browser. No login. No cloud. No health app sprawl.</p>
+        <h3>Backup and export</h3>
+        <p class="muted">Download a portable copy of your current app data.</p>
         <div class="row">
           <button class="ghost-btn" id="exportBtn">Export JSON</button>
           <button class="danger-btn" id="resetBtn">Reset App</button>
@@ -1148,6 +1157,7 @@ function renderSettings() {
       </div>
     </div>
   `;
+  if (typeof bindCloudSettingsControls === "function") bindCloudSettingsControls();
   document.getElementById("nameForm").addEventListener("submit", (event) => {
     event.preventDefault();
     state.settings.userName = document.getElementById("userNameInput").value.trim() || "Guest";
@@ -1252,4 +1262,10 @@ bindViewJumps();
 document.getElementById("goalForm").addEventListener("submit", saveGoalFromForm);
 document.getElementById("closeGoalDialog").addEventListener("click", () => document.getElementById("goalDialog").close());
 
-render();
+if (typeof initializeCloudApp === "function") {
+  initializeCloudApp();
+} else {
+  document.getElementById("authScreen")?.setAttribute("hidden", "");
+  document.getElementById("appShell")?.removeAttribute("hidden");
+  render();
+}

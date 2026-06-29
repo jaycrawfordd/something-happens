@@ -45,6 +45,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -62,6 +66,105 @@ textarea {
 
 button {
   cursor: pointer;
+}
+
+.auth-screen {
+  min-height: 100dvh;
+  padding: 28px;
+  display: grid;
+  place-items: center;
+  background: #000;
+}
+
+.auth-panel {
+  width: min(390px, 100%);
+  padding: 36px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+
+.auth-avatar {
+  display: inline-block;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.auth-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 88%;
+  transform: scale(2);
+}
+
+.auth-brand,
+.auth-copy,
+.auth-status {
+  color: var(--muted);
+}
+
+.auth-brand {
+  margin: 0 0 26px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.auth-panel h1 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.auth-copy {
+  margin: 10px 0 24px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+  text-align: left;
+}
+
+.auth-form .primary-btn {
+  margin-top: 4px;
+}
+
+.auth-link {
+  margin-top: 14px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.auth-link + .auth-link {
+  margin-left: 12px;
+}
+
+.auth-status {
+  min-height: 20px;
+  margin: 14px 0 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.auth-status[data-tone="error"],
+#cloudSyncStatus[data-tone="error"],
+.sync-indicator[data-tone="error"] {
+  color: var(--bad);
+}
+
+#cloudSyncStatus[data-tone="success"],
+.sync-indicator[data-tone="success"] {
+  color: var(--good);
 }
 
 .app-shell {
@@ -221,6 +324,14 @@ button {
   white-space: nowrap;
   justify-content: center;
   width: 100%;
+}
+
+.sync-indicator {
+  margin: auto 0 14px;
+  color: var(--muted);
+  font-size: 0.64rem;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .signature-avatar {
@@ -898,6 +1009,18 @@ canvas {
   margin: 0;
 }
 
+.account-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.account-panel h3,
+.account-panel p {
+  margin-bottom: 0;
+}
+
 .weight-quickbar {
   display: grid;
   grid-template-columns: minmax(160px, 1fr) minmax(150px, 190px) minmax(140px, 180px) auto;
@@ -1035,31 +1158,67 @@ dialog::backdrop {
 }
 
 @media (max-width: 760px) {
+  body {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+
   .app-shell {
-    grid-template-columns: 1fr;
+    display: block;
+    min-height: 100dvh;
   }
 
   .sidebar {
-    position: static;
-    height: auto;
-    padding: 14px;
+    position: fixed;
+    z-index: 50;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: calc(72px + env(safe-area-inset-bottom));
+    padding: 0 max(5px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(5px, env(safe-area-inset-left));
+    border-top: 1px solid var(--line);
+    border-right: 0;
   }
 
   .nav {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    height: 72px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0;
   }
 
   .nav-btn {
-    min-height: 74px;
-    font-size: 0.64rem;
+    min-width: 0;
+    min-height: 72px;
+    padding: 8px 2px 6px;
+    gap: 5px;
+    font-size: 0.5rem;
+    overflow: hidden;
   }
 
-  .sidebar-signature {
-    margin-top: 14px;
+  .nav-btn::after {
+    left: 8px;
+    bottom: 2px;
+  }
+
+  .nav-btn:hover::after,
+  .nav-btn.is-active::after {
+    right: 8px;
+  }
+
+  .nav-icon {
+    width: 21px;
+    height: 21px;
+  }
+
+  .sidebar-date,
+  .sidebar-signature,
+  .sync-indicator {
+    display: none;
   }
 
   .main {
-    padding: 16px;
+    padding: 20px 14px 24px;
   }
 
   .span-3,
@@ -1072,21 +1231,30 @@ dialog::backdrop {
   }
 
   .calendar-wrap {
-    grid-template-columns: repeat(7, minmax(42px, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
   }
 
   .day-cell {
-    min-height: 86px;
-    padding: 6px;
+    min-height: 72px;
+    padding: 5px;
+    gap: 4px;
   }
 
   .day-data {
     display: grid;
+    min-width: 0;
   }
 
   .badge {
-    font-size: 0.68rem;
-    padding: 2px 5px;
+    display: block;
+    max-width: 100%;
+    min-height: 18px;
+    padding: 2px 3px;
+    overflow: hidden;
+    font-size: 0.56rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .goal-toolbar,
@@ -1122,6 +1290,15 @@ dialog::backdrop {
   .hero-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .account-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .auth-screen {
+    padding: max(22px, env(safe-area-inset-top)) 22px max(22px, env(safe-area-inset-bottom));
+  }
 }
 
 @media (max-width: 620px) {
@@ -1139,6 +1316,7 @@ dialog::backdrop {
   }
 
   .weekday {
-    font-size: 0.65rem;
+    overflow: hidden;
+    font-size: 0.54rem;
   }
 }
